@@ -54,6 +54,9 @@ const Card: React.FC<CardProps> = ({ project, i, progress, range, targetScale })
   // 3D rotation effect
   const rotateX = useTransform(scrollYProgress, [0, 1], [15, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+  
+  // Inner content parallax
+  const contentY = useTransform(scrollYProgress, [0, 1], [50, 0]);
 
   return (
     <div ref={container} className="h-screen flex items-center justify-center sticky top-0 perspective-container">
@@ -74,14 +77,16 @@ const Card: React.FC<CardProps> = ({ project, i, progress, range, targetScale })
         </div>
 
         {/* Text Section */}
-        <div className="w-full md:w-[40%] p-8 md:p-12 flex flex-col justify-center bg-luxury-charcoal relative">
-            <span className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-4">{project.category}</span>
-            <h3 className="font-serif text-3xl md:text-4xl text-white mb-6">{project.title}</h3>
-            <p className="text-gray-400 font-light leading-relaxed mb-8 text-sm md:text-base">{project.description}</p>
-            <button className="self-start text-white text-xs uppercase tracking-widest border-b border-luxury-gold pb-1 hover:text-luxury-gold transition-colors">
-                View Project
-            </button>
-            <span className="absolute bottom-8 right-8 text-6xl md:text-8xl font-serif text-white/5 select-none">
+        <div className="w-full md:w-[40%] p-8 md:p-12 flex flex-col justify-center bg-luxury-charcoal relative overflow-hidden">
+            <motion.div style={{ y: contentY }}>
+                <span className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-4 block">{project.category}</span>
+                <h3 className="font-serif text-3xl md:text-4xl text-white mb-6">{project.title}</h3>
+                <p className="text-gray-400 font-light leading-relaxed mb-8 text-sm md:text-base">{project.description}</p>
+                <button className="self-start text-white text-xs uppercase tracking-widest border-b border-luxury-gold pb-1 hover:text-luxury-gold transition-colors">
+                    View Project
+                </button>
+            </motion.div>
+            <span className="absolute bottom-8 right-8 text-6xl md:text-8xl font-serif text-white/5 select-none pointer-events-none">
                 0{project.id}
             </span>
         </div>

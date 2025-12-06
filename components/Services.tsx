@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { PenTool, Box, Layout, Sun } from 'lucide-react';
 import { Service } from '../types';
 
@@ -40,6 +40,45 @@ const getIcon = (iconName: string) => {
     }
 };
 
+const TiltCard: React.FC<{ children: React.ReactNode; index: number }> = ({ children, index }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
+
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    const xPct = (clientX - left) / width - 0.5;
+    const yPct = (clientY - top) / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  }
+
+  function onMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [10, -10]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      viewport={{ once: true }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      className="perspective-container"
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 const Services: React.FC = () => {
   return (
     <section id="services" className="py-32 bg-luxury-charcoal relative overflow-hidden">
@@ -67,23 +106,17 @@ const Services: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {services.map((service, index) => (
-                    <motion.div
-                        key={service.id}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, duration: 0.6 }}
-                        viewport={{ once: true }}
-                        whileHover={{ y: -10 }}
-                        className="group bg-luxury-black/50 border border-white/5 p-8 md:p-10 hover:border-luxury-gold/50 transition-all duration-500 hover:shadow-2xl hover:shadow-luxury-gold/5"
-                    >
-                        <div className="text-luxury-gold mb-6 opacity-80 group-hover:opacity-100 transition-opacity">
-                            {getIcon(service.icon)}
+                    <TiltCard key={service.id} index={index}>
+                        <div className="h-full bg-luxury-black/50 border border-white/5 p-8 md:p-10 hover:border-luxury-gold/50 transition-colors duration-500 hover:shadow-2xl hover:shadow-luxury-gold/5 group" style={{ transform: "translateZ(20px)" }}>
+                            <div className="text-luxury-gold mb-6 opacity-80 group-hover:opacity-100 transition-opacity transform group-hover:scale-110 duration-300 origin-left">
+                                {getIcon(service.icon)}
+                            </div>
+                            <h3 className="text-xl font-serif text-white mb-4 group-hover:text-luxury-gold transition-colors">{service.title}</h3>
+                            <p className="text-gray-400 font-light text-sm leading-relaxed border-t border-white/10 pt-4 group-hover:border-luxury-gold/20 transition-colors">
+                                {service.description}
+                            </p>
                         </div>
-                        <h3 className="text-xl font-serif text-white mb-4 group-hover:text-luxury-gold transition-colors">{service.title}</h3>
-                        <p className="text-gray-400 font-light text-sm leading-relaxed border-t border-white/10 pt-4 group-hover:border-luxury-gold/20 transition-colors">
-                            {service.description}
-                        </p>
-                    </motion.div>
+                    </TiltCard>
                 ))}
             </div>
         </div>

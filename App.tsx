@@ -19,6 +19,7 @@ function App() {
 
   return (
     <div className="bg-luxury-black min-h-screen text-slate-100 selection:bg-luxury-gold selection:text-black">
+      <div className="bg-noise"></div>
       <AnimatePresence>
         {loading ? (
           <motion.div

@@ -11,21 +11,23 @@ function App() {
 
   useEffect(() => {
     // Simulate initial loading for assets
+    // Reduced time slightly for better responsiveness
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="bg-luxury-black min-h-screen text-slate-100 selection:bg-luxury-gold selection:text-black">
       <div className="bg-noise"></div>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
             key="loader"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
             className="fixed inset-0 z-[60] flex items-center justify-center bg-black"
           >
             <div className="flex flex-col items-center">
@@ -35,7 +37,7 @@ function App() {
                 transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
                 className="text-luxury-gold font-serif text-3xl tracking-widest border border-luxury-gold/30 px-6 py-2"
               >
-                L
+                LUMIÈRE
               </motion.div>
             </div>
           </motion.div>
@@ -57,6 +59,7 @@ function App() {
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8 }}
+                  viewport={{ once: true }}
                   className="md:w-1/2 relative"
                 >
                    <div className="absolute -top-4 -left-4 w-24 h-24 border-t border-l border-luxury-gold"></div>
@@ -68,6 +71,7 @@ function App() {
                   <motion.h2 
                      initial={{ opacity: 0, y: 20 }}
                      whileInView={{ opacity: 1, y: 0 }}
+                     viewport={{ once: true }}
                      className="text-4xl md:text-5xl font-serif mb-8 leading-tight"
                   >
                     Designing for the <span className="text-luxury-gold italic">Senses</span>
@@ -75,6 +79,7 @@ function App() {
                   <motion.p 
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
                     className="text-gray-400 font-light leading-relaxed mb-6 text-lg"
                   >
@@ -83,6 +88,7 @@ function App() {
                   <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.3 }}
                     className="text-gray-400 font-light leading-relaxed"
                   >
